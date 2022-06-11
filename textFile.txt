@@ -1,0 +1,109 @@
+Jan 25
+
+Filesystem Basic
+
+The root of the linux filesystem is the /
+The root of your local user filesytsem is your home
+home is aka ~
+
+pwd - print working directory
+
+/home/dave/Documents/CS2505/examples/examples/C
+
+Paths that start with a / are an absolute path
+
+cp - means copy
+cp takes a source and a destination
+
+cp source destination
+
+example
+
+cp io.c ~/Documents
+	copy io.c from here to the home documents
+	
+. or ./ is the current directory, or here, right here
+
+../ is the parent of this directory
+
+/home/dave/Documents/CS2505/examples/examples/
+
+====================
+-or
+====================
+will move you up a level
+
+====================
+
+====================
+
+Documents/CS2505/examples/examples/
+
+paths that do not begin with a / are relative paths
+they might start with ./
+./Documents/CS2505/examples/examples/
+
+
+ls - list the contents of a directory
+
+ls destination
+
+mv - moves a file from source to destination
+
+let's pretend we have a file name file.txt in our cwd (current
+working directory)
+
+mv file.txt ~/Documents/my-file.txt
+moves file to documents AND renames it to my-file.txt 
+
+mv file.txt ~/Documents it would move file and keep the same name
+
+	
+Filenames and directory names should not have spaces in them
+
+Extensions
+
+
+mkdir - make directory
+
+mkdir name
+
+rmdir - removes a directory
+
+rmdir name
+
+up and down arrows will scroll through your command history
+
+File Permissions
+
+All Linux files (and directories) have 3 sets of permissions
+
+You the user is a group        - u
+There is a group getting       - g
+And others is the last setting - o
+
+read permissions    - r 
+write permission    - w 
+execute permission  - x
+ r w x 
+ 0 0 1 - 1
+ 0 1 0 - 2
+ 1 0 0 - 4
+ 0 0 0 - 0
+ 
+ 
+ chmod o-r L02.txt
+ chmod o+w L02.txt
+ 
+ chmod go-r L02.txt
+ 
+ chmod 700 L02.txt
+ 
+ chmod or change modifiers is additive
+ 
+ 
+ 
+ 
+ 
+ 
+ 
