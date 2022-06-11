@@ -2,7 +2,7 @@ from asyncio.windows_events import NULL
 
 #Read each line from 25-Jan-Filesystems.txt
 #Put each line in an array
-oldFile = open('./25-Jan-Filesystems.txt', 'r')
+oldFile = open("./25-Jan-Filesystems.txt", 'r')
 if (oldFile == NULL):
     print("Failed Read")
 fLines = []
