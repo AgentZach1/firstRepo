@@ -1,7 +1,7 @@
 from asyncio.windows_events import NULL
 import random
 import os.path
-import cryptography
+#import cryptography
 from tkinter import * 
 import tkinter as tk
 from tkinter import ttk
@@ -47,6 +47,7 @@ def changeChar(c):
         return chr( (ord(c) >> 1) + 1)
     if ord(c) >= 48 and ord(c) <= 57:
         return chr( ord(c) + 20 )
+# End changeChar(c)
 
 # Same as above
 # Similar functions that don't make sense
@@ -64,6 +65,7 @@ def changeChar2(c):
         return chr( (ord(c) >> 1) + 3)
     if ord(c) >= 48 and ord(c) <= 59:
         return chr( ord(c) + 25 )
+# End changeChar2(c)
 
 # for c in nums:
 #    print(changeChar2(c))
@@ -92,7 +94,7 @@ def makeFunc(numP):
     X[4] = changeChar(W[4])
     #Third Set 5757 words
     lines = []
-    wordFile = open('C:/Users/owlma/Desktop/Notes/School Notes/gitRepo/passwordFun/words.txt', 'r')
+    wordFile = open('C:/Users/owlma/Desktop/Notes/School_Notes/gitRepo/passwordFun/words.txt', 'r')
     lines = wordFile.readlines()
     # print( "wordFileLength == " + str(len(lines)) )
     wordFile.close()
@@ -112,15 +114,7 @@ def makeFunc(numP):
     Z[4] = numP[2] #chr(ord(amt[lst][2]))
 
     return makeStr(W) + "-" + makeStr(X) + "-" + makeStr(Y) + "-" + makeStr(Z)
-
-count = input("Input how many passwords to generate: ")
-
-if count == NULL:
-    print("Null Input Error")
-    exit()
-if int(count) < 0:
-    print("Can't make negative passwords Error")
-    exit()
+# end MakeFunc(numP)
 
 # for j in range(0, int(count)):
 #     passList.extend(makeFunc())
@@ -131,7 +125,7 @@ def isCool(stinky):
     length = len(stinky)
     score = 0
     
-    # It's cute
+    # It's cute cus they all the same length <3
     if (length > 20):
         score = score + 0
     for i in range(0, length):
@@ -147,7 +141,6 @@ def isCool(stinky):
         if i > 1 and i < length - 1:
             if ord(stinky[i-1]) == cat and ord(stinky[i+1]) == cat:
                 score-=10
-        
     if score > 0:
         coolio = True
         print("Def cool: " + str(score))
@@ -160,9 +153,9 @@ def isCool(stinky):
         coolio = False
         print("Not cool: " + str(score))
         return coolio
+# End isCool(stinky)
 
-
-def addToFile():
+def addToFile(count):
     stringer = ""
     numPass = 0
     # Check if file exists
@@ -218,6 +211,35 @@ def addToFile():
             print(stringer)
         j+=1
     dictFile.close()
+# End addToFile()
+
+def inputAsk():
+    count = input("Input how many passwords to generate: ")
+    if count == NULL:
+        print("Null Input Error")
+        exit()
+    elif int(count) < 0:
+        print("Can't make negative passwords Error")
+        exit()
+    else:
+        addToFile(count)
+# End inputAsk(count)
+
+inny = inputAsk()
+print(addToFile(inny))
+
+# root = Tk()
+# frm = ttk.Frame(root, padding=100)
+# frm.grid()
+# label = ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
+# qButt = ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
+# pButt = ttk.Button(frm, text="How many passwords?", command=print("Hi")).grid(column=4, row = 0)
+# print( ttk.Button.configure(self=True).keys())
+# root.mainloop()
+
+
+
+
 
 # class App(ttk.Frame):
 #     def __init__(self, container):
@@ -237,7 +259,10 @@ def addToFile():
 #     def button_clicked(self):
 #         addToFile()
 #add rating system to vet passwords before adding to dictionary
-addToFile()
+
+
+
+#inputAsk(input("Input how many passwords to generate: "))
 
 # def windowBaby():
 #     window = tk.Tk()
