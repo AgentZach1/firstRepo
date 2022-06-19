@@ -29,7 +29,11 @@ special = ['!', '@', '#', '$', '%', '^', '&', '*']
 #           33   64   35   36   37   94   38   42
 #char list
 charList = [alphaL, alphaU, nums, special]
-
+# Big Dict has three inner arrays
+# 1. Password number
+# 2. Password plaintext
+# 3. Name
+bigDict = [[], [], []]
 
 # The first character changing function
 # TBH no idea what the character changing means. Don't wanna deal with it
@@ -155,9 +159,12 @@ def isCool(stinky):
         return coolio
 # End isCool(stinky)
 
-def addToFile(count):
+def addToFile(count, name):
+    passName = name
+    
     stringer = ""
     numPass = 0
+    count = ""+count
     # Check if file exists
     # If so then open and check length
     # If length > 1000 then exit and say why
@@ -181,36 +188,83 @@ def addToFile(count):
         # If doesn't exist, then create the file
         dictFile = open("./passDict.txt", 'w')
         numPass = "000"
+    dictFile.close()
 
     # Second redundant check numerically out of dictionary
     manyToMake = int(numPass) + int(count)
     if manyToMake >= 1000:
         manyToMake = 999
-    # elif int(numPass) + int(count) > 1000:
-    #     print("Cannot make anymore passwords")
-    #     dictFile.close()
-    #     exit()
-    # Code to add passwords to dictionary
     
     dictFile = open("./passDict.txt", 'a+')
     passer = ""
     j = int(numPass)
-    while j <= manyToMake:
-        passer = str(makeFunc('{:0>3}'.format(j)))
-        if isCool(passer):
-            stringer = str('{:0>3}'.format(j)) + " " + passer
-            dictFile.write( stringer + "\n")
-            print(stringer)
+    while j < manyToMake:
+        if j == 0:
+            j = 0
+            numNum = '{:0>3}'.format(j)
+            passer = str(makeFunc(numNum))
+            if isCool(passer):
+                stringer = str(numNum) + " " + passer + " " + passName
+                dictFile.write( stringer + "\n")
+                print(stringer)
+            else:
+                cart = 0
+                while not isCool(passer) and cart < 5:
+                    passer = str(makeFunc(numNum))
+                    cart+=1
+                stringer = str(numNum) + " " + passer + " " + passName
+                dictFile.write( stringer + "\n")
+                print(stringer)
         else:
-            cart = 0
-            while not isCool(passer) and cart < 5:
-                passer = str(makeFunc('{:0>3}'.format(j)))
-                cart+=1
-            stringer = str('{:0>3}'.format(j)) + " " + passer
-            dictFile.write( stringer + "\n")
-            print(stringer)
+            numNum = '{:0>3}'.format(j)
+            passer = str(makeFunc(numNum))
+            if isCool(passer):
+                stringer = str(numNum) + " " + passer + " " + passName
+                dictFile.write( stringer + "\n")
+                print(stringer)
+            else:
+                cart = 0
+                while not isCool(passer) and cart < 5:
+                    passer = str(makeFunc(numNum))
+                    cart+=1
+                stringer = str(numNum) + " " + passer + " " + passName
+                dictFile.write( stringer + "\n")
+                print(stringer)
         j+=1
     dictFile.close()
+    dictFile  = open("./passDict.txt", 'r')
+    lastLine = dictFile.readlines()
+    print(lastLine)
+    dictFile.close()
+    
+    # Code to add passwords to dictionary
+    dictFile = open("./passDict.txt", 'a+')
+    dictText = ""
+    # Set up current dictionary
+    # Iterate through how many exist
+    i = 0
+    while i < len(lastLine):
+        # For each number add entry to number, password, and name
+        bigDict[0].append(lastLine[i][0:3])
+        dictText += lastLine[i][0:3] + " "
+        bigDict[1].append(lastLine[i][4:27])
+        dictText += lastLine[i][4:27] + " "
+        # Each password gets the name initially in the log. If empty put "noname"
+        if ( len(lastLine[i]) > 28 ):
+            bigDict[2].append(lastLine[i][28:len(lastLine[i])])
+            dictText += lastLine[i][28:len(lastLine[i])]
+        else:
+            bigDict[2].append("Noname")
+            dictText += "Noname\n"
+        i+=1
+    dictFile.close()
+    newDictInTown = open("./passDict.txt", 'w')
+    newDictInTown.writelines(dictText)
+    newDictInTown.close()
+    print(dictText)
+    print(bigDict)
+
+
 # End addToFile()
 
 def inputAsk():
@@ -222,11 +276,11 @@ def inputAsk():
         print("Can't make negative passwords Error")
         exit()
     else:
-        addToFile(count)
+        name = input("Input the name to search for password: ")
+        addToFile(count, name)
 # End inputAsk(count)
 
-inny = inputAsk()
-print(addToFile(inny))
+inputAsk()
 
 # root = Tk()
 # frm = ttk.Frame(root, padding=100)
