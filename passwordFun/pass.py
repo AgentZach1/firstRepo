@@ -300,16 +300,49 @@ def addToFile(count, name):
     newDictInTown.writelines(dictText)
     newDictInTown.close()
     print("Updated file and dictionary")
+
+    print("New password for: " + passName + " : " + passer + " copied to clipboard.")
+    pc.copy(passer)
 # End addToFile()
 
 def findInFile(name):
     iterate = 0
     foundFile = False
     while iterate < len(bigDict[0]):
-        #print(bigDict[2][iterate][0:len(bigDict[2][iterate])-1])
         if bigDict[2][iterate][0:len(bigDict[2][iterate])-1] == str(name):
-            print(str(bigDict[1][iterate]))
-            foundFile = True
+            # Check for multiples
+            matchingList = [[],[]]
+            multiIter = iterate
+            while multiIter < len(bigDict[0]):
+                if bigDict[2][multiIter][0:len(bigDict[2][multiIter])-1] == str(name):
+                    matchingList[0].append(bigDict[0][multiIter])
+                    matchingList[1].append(bigDict[1][multiIter])
+                multiIter+=1
+            if ( len(matchingList[0]) == 1 ):
+                print("Found your password: " + str(bigDict[1][iterate]))
+                print("Password copied to clipboard")
+                pc.copy(str(bigDict[1][iterate]))
+                foundFile = True
+                exit()
+            elif ( len(matchingList[1]) > 1 ):
+                print("Multiple passwords with the same name found\nSearching by password number\n")
+                for i in matchingList[0]:
+                    print(matchingList[0][int(i)] + " : " + matchingList[1][int(i)])
+                passIndex = input("Input index number of password: ")
+                if ( passIndex != NULL and type(int(passIndex)) == int):
+                    for i in matchingList[0]:
+                        if '{:0>3}'.format(int(passIndex)) == matchingList[0][int(i)]:
+                            print("Found your password: " + str(matchingList[1][int(i)]))
+                            print("Password copied to clipboard")
+                            pc.copy(str(matchingList[1][int(i)]))
+                            foundFile = True
+                            exit()
+                else:
+                    print("Input Error: exiting...")
+                    exit()
+            else:
+                print("Unexpected Error: exiting")
+                exit()
             return
         iterate+=1
     if not foundFile:
