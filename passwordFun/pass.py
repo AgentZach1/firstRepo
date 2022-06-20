@@ -6,10 +6,13 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showerror
+import pyperclip as pc
 
 # import numpy
 
 #Program to generate random keys for passwords
+
+dictAddy = "./passDict.txt"
 
 #len == 26
 alphaL = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -34,6 +37,7 @@ charList = [alphaL, alphaU, nums, special]
 # 2. Password plaintext
 # 3. Name
 bigDict = [[], [], []]
+
 
 # The first character changing function
 # TBH no idea what the character changing means. Don't wanna deal with it
@@ -120,10 +124,6 @@ def makeFunc(numP):
     return makeStr(W) + "-" + makeStr(X) + "-" + makeStr(Y) + "-" + makeStr(Z)
 # end MakeFunc(numP)
 
-# for j in range(0, int(count)):
-#     passList.extend(makeFunc())
-# print(makeStr(passList))
-
 def isCool(stinky):
     coolio = False
     length = len(stinky)
@@ -159,18 +159,55 @@ def isCool(stinky):
         return coolio
 # End isCool(stinky)
 
+
+
+def createDict():
+    
+    if os.path.exists(dictAddy):
+        dictFile = open(dictAddy, 'r')
+        lastLine = dictFile.readlines()
+        fileLength = len(lastLine)
+        dictText = ""
+        # Set up current dictionary
+        # Iterate through how many exist
+        i = 0
+        while i < fileLength:
+            # For each number add entry to number, password, and name
+            bigDict[0].append(lastLine[i][0:3])
+            dictText += lastLine[i][0:3] + " "
+            bigDict[1].append(lastLine[i][4:27])
+            dictText += lastLine[i][4:27] + " "
+            # Each password gets the name initially in the log. If empty put "noname"
+            if ( len(lastLine[i]) > 28 ):
+                bigDict[2].append(lastLine[i][28:len(lastLine[i])])
+                dictText += lastLine[i][28:len(lastLine[i])]
+            else:
+                bigDict[2].append("Noname")
+                dictText += "Noname\n"
+            i+=1
+        dictFile.close()
+        newDictInTown = open(dictAddy, 'w')
+        newDictInTown.writelines(dictText)
+        newDictInTown.close()
+        print(dictText)
+        print(bigDict)
+    else:
+        print("No file to open... continuing on...")
+    return 0
+# End createDict()
+
 def addToFile(count, name):
     passName = name
     
     stringer = ""
     numPass = 0
-    count = ""+count
+    count = ""+str(count)
     # Check if file exists
     # If so then open and check length
     # If length > 1000 then exit and say why
     # Also check if empty
-    if os.path.exists("./passDict.txt"):
-        dictFile = open("./passDict.txt", 'r')
+    if os.path.exists(dictAddy):
+        dictFile = open(dictAddy, 'r')
         lastLine = dictFile.readlines()
         fileLength = len(lastLine)
         # Basic check if more than 1k passwords
@@ -186,7 +223,7 @@ def addToFile(count, name):
             numPass = lastLine[fileLength - 1][0:3]  
     else:
         # If doesn't exist, then create the file
-        dictFile = open("./passDict.txt", 'w')
+        dictFile = open(dictAddy, 'w')
         numPass = "000"
     dictFile.close()
 
@@ -195,12 +232,11 @@ def addToFile(count, name):
     if manyToMake >= 1000:
         manyToMake = 999
     
-    dictFile = open("./passDict.txt", 'a+')
+    dictFile = open(dictAddy, 'a+')
     passer = ""
     j = int(numPass)
-    while j < manyToMake:
-        if j == 0:
-            j = 0
+    if ( j == 0 ):
+        while j < manyToMake:
             numNum = '{:0>3}'.format(j)
             passer = str(makeFunc(numNum))
             if isCool(passer):
@@ -215,7 +251,10 @@ def addToFile(count, name):
                 stringer = str(numNum) + " " + passer + " " + passName
                 dictFile.write( stringer + "\n")
                 print(stringer)
-        else:
+            j+=1
+    else:
+        while j < manyToMake:
+            j+=1
             numNum = '{:0>3}'.format(j)
             passer = str(makeFunc(numNum))
             if isCool(passer):
@@ -230,15 +269,14 @@ def addToFile(count, name):
                 stringer = str(numNum) + " " + passer + " " + passName
                 dictFile.write( stringer + "\n")
                 print(stringer)
-        j+=1
+
     dictFile.close()
-    dictFile  = open("./passDict.txt", 'r')
+    dictFile  = open(dictAddy, 'r')
     lastLine = dictFile.readlines()
-    print(lastLine)
     dictFile.close()
     
     # Code to add passwords to dictionary
-    dictFile = open("./passDict.txt", 'a+')
+    dictFile = open(dictAddy, 'a+')
     dictText = ""
     # Set up current dictionary
     # Iterate through how many exist
@@ -258,30 +296,78 @@ def addToFile(count, name):
             dictText += "Noname\n"
         i+=1
     dictFile.close()
-    newDictInTown = open("./passDict.txt", 'w')
+    newDictInTown = open(dictAddy, 'w')
     newDictInTown.writelines(dictText)
     newDictInTown.close()
-    print(dictText)
-    print(bigDict)
-
-
+    print("Updated file and dictionary")
 # End addToFile()
 
+def findInFile(name):
+    iterate = 0
+    foundFile = False
+    while iterate < len(bigDict[0]):
+        #print(bigDict[2][iterate][0:len(bigDict[2][iterate])-1])
+        if bigDict[2][iterate][0:len(bigDict[2][iterate])-1] == str(name):
+            print(str(bigDict[1][iterate]))
+            foundFile = True
+            return
+        iterate+=1
+    if not foundFile:
+        print("Nomenclature Error: could not find password under that name. Try again with another?")
+        nomenAns = input("===============\nYes[0] or No[1]\n===============\n")
+        if ( int(nomenAns) == 0 ):
+            newName = input("Input new name to search for: ")
+            findInFile(newName)
+        elif ( int(nomenAns) == 1 ):
+            print("No selected... exiting")
+            exit()
+        else:
+            print("Input Error: exiting...")
+            exit()
+    else:
+        print("Success: Go again?")
+        nomenAns = input("===============\nYes[0] or No[1]\n===============\n")
+        if ( int(nomenAns) == 0 ):
+            newName = input("Input new name to search for: ")
+            findInFile(newName)
+        elif ( int(nomenAns) == 1 ):
+            print("No selected... exiting")
+            exit()
+        else:
+            print("Input Error: exiting...")
+            exit()
+# End findInFile()
+
+def listInFile():
+    
+    return NULL
+# End listInFile()
+
+
 def inputAsk():
-    count = input("Input how many passwords to generate: ")
-    if count == NULL:
+    genYesOr = input("Hello, welcome to the password protected dictionary!\nInput [0] to generate a password: \nInput [1] to request a password: \n<User (you)'s Input>: ")
+    
+    if genYesOr == NULL:
         print("Null Input Error")
         exit()
-    elif int(count) < 0:
-        print("Can't make negative passwords Error")
-        exit()
+    elif int(genYesOr) == 0:
+        name = input("Input a name for the password: ")
+        addToFile(1, name)
+    elif int(genYesOr) == 1:
+        # Do search for password
+        name = input("Input the name for the password: ")
+        print("Searching for password")
+        findInFile(name)
     else:
-        name = input("Input the name to search for password: ")
-        addToFile(count, name)
+        print("Input Error: exiting...")
+        exit()
+        
 # End inputAsk(count)
 
-inputAsk()
-
+def setUp():
+    createDict()
+    inputAsk()
+    
 # root = Tk()
 # frm = ttk.Frame(root, padding=100)
 # frm.grid()
@@ -291,7 +377,7 @@ inputAsk()
 # print( ttk.Button.configure(self=True).keys())
 # root.mainloop()
 
-
+setUp()
 
 
 
